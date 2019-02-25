@@ -6,8 +6,7 @@ public class MessageToUser implements Serializable {
 
 	private String message;
 
-	public MessageToUser() {
-	}
+	public MessageToUser() {}
 
 	public MessageToUser(String message) {
 		this.message = message;
