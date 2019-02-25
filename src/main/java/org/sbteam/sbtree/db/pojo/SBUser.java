@@ -19,6 +19,7 @@ public class SBUser implements Serializable {
 	@Id
 	private Long id;
 
+	@Index
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private String login;
 

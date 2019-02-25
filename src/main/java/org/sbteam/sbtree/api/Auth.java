@@ -1,6 +1,5 @@
 package org.sbteam.sbtree.api;
 
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
@@ -8,13 +7,9 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.response.ConflictException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.UnauthorizedException;
-import com.googlecode.objectify.Key;
 
 import org.sbteam.sbtree.security.JWTAuthenticator;
 import org.sbteam.sbtree.security.JWTTokenGenerator;
-import org.sbteam.sbtree.security.SecretHolder;
-import org.sbteam.sbtree.Constants;
-import org.sbteam.sbtree.db.pojo.LoginResult;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.db.pojo.UsernamePasswordCredentials;
@@ -39,9 +34,8 @@ public class Auth {
     @ApiMethod(name = "login", httpMethod = "POST")
     public ResultWrapper<String> login(UsernamePasswordCredentials credentials)
       throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
-
-        SBUser result = ofy().load().type(SBUser.class).filter("login == ", credentials.getUsername()).first().now();
-
+      
+        SBUser result = ofy().load().type(SBUser.class).filter("login", credentials.getUsername()).first().now();
         if (result == null || credentials.getPassword() == null)  {
             throw new UnauthorizedException("Invalid credentials");
         }
@@ -59,7 +53,7 @@ public class Auth {
     }
 
     @ApiMethod(name = "signup", httpMethod = "POST")
-    public ResultWrapper<String> register(UsernamePasswordCredentials credentials) throws ConflictException, NoSuchAlgorithmException {
+    public ResultWrapper<String> signup(UsernamePasswordCredentials credentials) throws ConflictException, NoSuchAlgorithmException {
 
         SBUser result = ofy().load().type(SBUser.class).filter("login == ", credentials.getUsername()).first().now();
 

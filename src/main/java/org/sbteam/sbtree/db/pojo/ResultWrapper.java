@@ -13,6 +13,7 @@ public class ResultWrapper<T> {
 
     public ResultWrapper(T result, String token) {
         this.result = result;
+        this.token = token;
     }
 
     public void setResult(T result) {

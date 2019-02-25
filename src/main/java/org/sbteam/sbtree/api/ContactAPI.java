@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.sbteam.sbtree.db.pojo.SBUser;
-import org.sbteam.sbtree.db.pojo.MessageToUser;
+import org.sbteam.sbtree.security.JWTAuthenticator;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 
 import static org.sbteam.sbtree.service.OfyService.ofy;
@@ -22,13 +22,12 @@ public class ContactAPI {
 
 	private static final Logger LOG = Logger.getLogger(ContactAPI.class.getName());
 
-	@ApiMethod(name = "getAllContacts", path = "contacts", httpMethod = HttpMethod.GET)
+	@ApiMethod(name = "getAllContacts", path = "contacts", httpMethod = HttpMethod.GET, authenticators = { JWTAuthenticator.class })
 	public ResultWrapper<List<SBUser>> getAllContacts(final User user) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
-			// TODO uncomment after adding auth
-			// throw new UnauthorizedException("Authorization required");
+			throw new UnauthorizedException("Authorization required");
 		}
 
 		List<SBUser> result = ofy().load().type(SBUser.class).list();
@@ -36,14 +35,13 @@ public class ContactAPI {
 		return new ResultWrapper<>(result);
 	}
 
-	@ApiMethod(name = "getContact", path = "contacts/{id}", httpMethod = HttpMethod.GET)
+	@ApiMethod(name = "getContact", path = "contacts/{id}", httpMethod = HttpMethod.GET, authenticators = { JWTAuthenticator.class })
 	public ResultWrapper<SBUser> getContact(
 		final User user, @Named("id") final Long id) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
-			// TODO uncomment after adding auth
-			// throw new UnauthorizedException("Authorization required");
+			throw new UnauthorizedException("Authorization required");
 		}
 
 		SBUser result = ofy().load().type(SBUser.class).id(id).now();
@@ -55,13 +53,12 @@ public class ContactAPI {
 		return new ResultWrapper<>(result);
 	}
 
-	@ApiMethod(name = "createContact", path = "contacts", httpMethod = HttpMethod.POST)
+	@ApiMethod(name = "createContact", path = "contacts", httpMethod = HttpMethod.POST, authenticators = { JWTAuthenticator.class })
 	public ResultWrapper<SBUser> createContact(final User user, final SBUser contact) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
-			// TODO uncomment after adding auth
-			// throw new UnauthorizedException("Authorization required");
+			throw new UnauthorizedException("Authorization required");
 		}
 
 		contact.setId(null); // required to have auto-generated id
@@ -75,15 +72,14 @@ public class ContactAPI {
 		return new ResultWrapper<>(contact);
 	}
 
-	@ApiMethod(name = "updateContact", path = "contacts/{id}", httpMethod = HttpMethod.PUT )
+	@ApiMethod(name = "updateContact", path = "contacts/{id}", httpMethod = HttpMethod.PUT, authenticators = { JWTAuthenticator.class })
 	public ResultWrapper<SBUser> updateContact(
 		final User user, @Named("id") Long id, SBUser contact
 	) throws UnauthorizedException, NotFoundException, BadRequestException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
-			// TODO uncomment after adding auth
-			// throw new UnauthorizedException("Authorization required");
+			throw new UnauthorizedException("Authorization required");
 		}
 
 		if (!id.equals(contact.getId())) {
