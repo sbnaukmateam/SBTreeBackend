@@ -8,7 +8,6 @@ import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.Objectify;
 import java.util.List;
 import java.util.logging.Logger;
 
