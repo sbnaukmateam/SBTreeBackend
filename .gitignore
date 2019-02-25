@@ -2,6 +2,9 @@
 .settings
 .classpath
 .project
+.gradle
+.factorypath
 .idea
 target
 bin
+src/main/webapp/WEB-INF/secrets.json

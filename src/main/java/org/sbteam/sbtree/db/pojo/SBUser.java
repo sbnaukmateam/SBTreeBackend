@@ -6,6 +6,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,9 +15,16 @@ import java.util.List;
 
 @Entity
 @Cache
-public class Contact implements Serializable {
+public class SBUser implements Serializable {
 	@Id
 	private Long id;
+
+	@Index
+	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+	private String login;
+
+	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+    private String password;
 	
 	private String avatar;
 	
@@ -29,7 +37,7 @@ public class Contact implements Serializable {
 	private List<KMADegree> degrees = new LinkedList<>();
 
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-	private Key<Contact> patron;
+	private Key<SBUser> patron;
 	
 	private Date birthday;
 	
@@ -43,10 +51,12 @@ public class Contact implements Serializable {
 	
 	private List<String> interests = new LinkedList<>();;
 
-	public Contact() {}
+	public SBUser() {}
 
-	public Contact(Long id, String avatar, String name, String surname, String nickName, List<KMADegree> degrees, Key<Contact> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, String password) {
+	public SBUser(Long id, String login, String password, String avatar, String name, String surname, String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
 		this.id = id;
+		this.login = login;
+		this.password = password;
 		this.avatar = avatar;
 		this.name = name;
 		this.surname = surname;
@@ -67,6 +77,22 @@ public class Contact implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getAvatar() {
@@ -114,14 +140,14 @@ public class Contact implements Serializable {
 	}
 
 	public void setPatronId(Long patronId) {
-		this.patron = Key.create(Contact.class, patronId);
+		this.patron = Key.create(SBUser.class, patronId);
 	}
 
-	public Key<Contact> getPatron() {
+	public Key<SBUser> getPatron() {
 		return patron;
 	}
 
-	public void setPatron(Key<Contact> patron) {
+	public void setPatron(Key<SBUser> patron) {
 		this.patron = patron;
 	}
 

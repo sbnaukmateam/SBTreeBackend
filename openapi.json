@@ -1,0 +1,6 @@
+{
+  "x-google-endpoints": [{
+    "name": "api-sbnaukma.appspot.com",
+    "allowCors": true
+  }]
+}
