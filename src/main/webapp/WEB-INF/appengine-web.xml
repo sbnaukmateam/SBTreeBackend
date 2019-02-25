@@ -5,4 +5,7 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
+    <resource-files>
+      <include path="WEB-INF/secrets.json" />
+    </resource-files>
 </appengine-web-app>
