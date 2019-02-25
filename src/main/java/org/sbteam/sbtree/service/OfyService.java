@@ -1,4 +1,4 @@
-package org.sbteam.sbtree.api;
+package org.sbteam.sbtree.service;
 
 
 import com.googlecode.objectify.Objectify;
@@ -27,7 +27,6 @@ public class OfyService {
 	 *
 	 * @return Objectify service object.
 	 */
-	@SuppressWarnings("unused")
 	public static Objectify ofy() {
 		return ObjectifyService.ofy();
 	}
