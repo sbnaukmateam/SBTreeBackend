@@ -3,7 +3,7 @@ package org.sbteam.sbtree.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
-import org.sbteam.sbtree.db.pojo.PingResult;
+import org.sbteam.sbtree.db.pojo.ResultWrapper;
 
 @Api(
     name = "ping",
@@ -12,7 +12,7 @@ import org.sbteam.sbtree.db.pojo.PingResult;
 public class Ping {
 
   @ApiMethod(name = "ping", httpMethod = "GET")
-  public PingResult ping() {
-    return new PingResult("OK");
+  public ResultWrapper ping() {
+    return new ResultWrapper("OK");
   }
 }

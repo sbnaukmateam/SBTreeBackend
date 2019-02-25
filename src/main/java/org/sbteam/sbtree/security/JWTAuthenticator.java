@@ -11,7 +11,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import org.sbteam.sbtree.Constants;;
 
-public class BasicAuthenticator implements Authenticator {
+public class JWTAuthenticator implements Authenticator {
 
     @Override
     public User authenticate(HttpServletRequest request) throws ServiceException {
@@ -19,12 +19,14 @@ public class BasicAuthenticator implements Authenticator {
         if (token != null) {
             // parse the token.
             try {
-                String username = JWT.require(Algorithm.HMAC512(SecretHolder.getSecret(Constants.JWT_SECRET).getBytes()))
+                byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
+                Algorithm algorithm = Algorithm.HMAC512(secret);
+                String userId = JWT.require(algorithm)
                     .build()
                     .verify(token.replace(Constants.TOKEN_PREFIX, ""))
                     .getSubject();
-                if (username != null) {
-                    return new User(username);
+                if (userId != null) {
+                    return new User(userId);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

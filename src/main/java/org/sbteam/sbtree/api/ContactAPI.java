@@ -11,9 +11,11 @@ import com.google.appengine.api.users.User;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.sbteam.sbtree.db.pojo.Contact;
+import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.db.pojo.MessageToUser;
-import static org.sbteam.sbtree.service.OfyService.ofy;;
+import org.sbteam.sbtree.db.pojo.ResultWrapper;
+
+import static org.sbteam.sbtree.service.OfyService.ofy;
 
 @Api(name = "contact", version = "v1", description = "Contact API")
 public class ContactAPI {
@@ -21,7 +23,7 @@ public class ContactAPI {
 	private static final Logger LOG = Logger.getLogger(ContactAPI.class.getName());
 
 	@ApiMethod(name = "getAllContacts", path = "contacts", httpMethod = HttpMethod.GET)
-	public List<Contact> getAllContacts(final User user) throws UnauthorizedException, NotFoundException {
+	public ResultWrapper<List<SBUser>> getAllContacts(final User user) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
@@ -29,13 +31,13 @@ public class ContactAPI {
 			// throw new UnauthorizedException("Authorization required");
 		}
 
-		List<Contact> result = ofy().load().type(Contact.class).list();
+		List<SBUser> result = ofy().load().type(SBUser.class).list();
 
-		return result;
+		return new ResultWrapper<>(result);
 	}
 
 	@ApiMethod(name = "getContact", path = "contacts/{id}", httpMethod = HttpMethod.GET)
-	public Contact getContact(
+	public ResultWrapper<SBUser> getContact(
 		final User user, @Named("id") final Long id) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
@@ -44,17 +46,17 @@ public class ContactAPI {
 			// throw new UnauthorizedException("Authorization required");
 		}
 
-		Contact result = ofy().load().type(Contact.class).id(id).now();
+		SBUser result = ofy().load().type(SBUser.class).id(id).now();
 
-		if (result==null) {
+		if (result == null) {
 			throw new NotFoundException("no result found");
 		}
 
-		return result;
+		return new ResultWrapper<>(result);
 	}
 
 	@ApiMethod(name = "createContact", path = "contacts", httpMethod = HttpMethod.POST)
-	public MessageToUser createContact(final User user, final Contact contact) throws UnauthorizedException, NotFoundException {
+	public ResultWrapper<SBUser> createContact(final User user, final SBUser contact) throws UnauthorizedException, NotFoundException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
@@ -70,12 +72,12 @@ public class ContactAPI {
 
 		ofy().save().entity(contact).now();
 
-		return new MessageToUser("contact created: " + contact.getId() );
+		return new ResultWrapper<>(contact);
 	}
 
 	@ApiMethod(name = "updateContact", path = "contacts/{id}", httpMethod = HttpMethod.PUT )
-	public MessageToUser updateContact(
-		final User user, @Named("id") Long id, Contact contact
+	public ResultWrapper<SBUser> updateContact(
+		final User user, @Named("id") Long id, SBUser contact
 	) throws UnauthorizedException, NotFoundException, BadRequestException {
 
 		if (user == null) {
@@ -94,12 +96,12 @@ public class ContactAPI {
 
 		ofy().save().entity(contact).now();
 
-		return new MessageToUser("contact updated: " + contact.getId() );
+		return new ResultWrapper<>(contact);
 	}
 
 	private void checkExists(Long id) throws NotFoundException {
         try {
-            ofy().load().type(Contact.class).id(id).safe();
+            ofy().load().type(SBUser.class).id(id).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find Person with ID: " + id);
         }
@@ -113,7 +115,7 @@ public class ContactAPI {
 			throw new BadRequestException("Invalid patron for the member");
 		}
 		try {
-			Contact patron = ofy().load().type(Contact.class).id(patronId).now();
+			SBUser patron = ofy().load().type(SBUser.class).id(patronId).now();
 			if (memberId != null) {
 				validatePatron(patron.getPatronId(), memberId);
 			}
