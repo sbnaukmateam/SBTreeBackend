@@ -14,10 +14,11 @@ public class KMADegree implements Serializable {
     
     public KMADegree() {}
 
-    public KMADegree(int year, String faculty, String speciality) {
+    public KMADegree(int year, String faculty, String speciality, String program) {
         this.year = year;
         this.faculty = faculty;
         this.speciality = speciality;
+        this.program = program;
     }
 
     public int getYear() {

@@ -12,6 +12,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import org.sbteam.sbtree.Constants;;
 
 public class JWTAuthenticator implements Authenticator {
+    private byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
 
     @Override
     public User authenticate(HttpServletRequest request) throws ServiceException {
@@ -19,7 +20,6 @@ public class JWTAuthenticator implements Authenticator {
         if (token != null) {
             // parse the token.
             try {
-                byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
                 Algorithm algorithm = Algorithm.HMAC512(secret);
                 String userId = JWT.require(algorithm)
                     .build()

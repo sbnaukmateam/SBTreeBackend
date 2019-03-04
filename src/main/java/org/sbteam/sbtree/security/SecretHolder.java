@@ -21,6 +21,7 @@ public class SecretHolder {
         if (cache.containsKey(name)) {
             return cache.get(name);
         }
+        // TODO: read entire file to cache
         try(InputStream is = new FileInputStream(getSecretsPath())) {
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject)jsonParser.parse(new InputStreamReader(is, "UTF-8"));
