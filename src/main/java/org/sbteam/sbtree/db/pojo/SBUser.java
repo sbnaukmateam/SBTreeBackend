@@ -7,11 +7,9 @@ import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
-import com.googlecode.objectify.annotation.IgnoreLoad;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
-import com.googlecode.objectify.condition.IfNull;
 
 import org.sbteam.sbtree.security.SecurityUtils;
 
@@ -29,7 +27,6 @@ public class SBUser implements Serializable {
 	private Long id;
 
 	@Index
-	@IgnoreSave(IfNull.class)
 	private String username;
 
 	@Ignore

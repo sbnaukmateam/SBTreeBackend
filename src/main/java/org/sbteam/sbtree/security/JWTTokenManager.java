@@ -22,7 +22,7 @@ public class JWTTokenManager {
             .withIssuer("auth0")
             .withSubject(user.getId().toString())
             .withClaim("signature", createSignature(salt, user))
-            .withClaim("salt", salt.toString())
+            .withClaim("salt", salt)
             .sign(algorithm);
     }
 
