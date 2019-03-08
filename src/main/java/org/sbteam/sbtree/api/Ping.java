@@ -12,7 +12,7 @@ import org.sbteam.sbtree.db.pojo.ResultWrapper;
 public class Ping {
 
   @ApiMethod(name = "ping", httpMethod = "GET")
-  public ResultWrapper ping() {
-    return new ResultWrapper("OK");
+  public ResultWrapper<String> ping() {
+    return new ResultWrapper<>("OK");
   }
 }

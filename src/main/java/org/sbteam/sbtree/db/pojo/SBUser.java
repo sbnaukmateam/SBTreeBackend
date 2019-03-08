@@ -6,9 +6,15 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.condition.IfNull;
+
+import org.sbteam.sbtree.security.SecurityUtils;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,45 +23,51 @@ import java.util.List;
 @Cache
 public class SBUser implements Serializable {
 	@Id
+	@IgnoreSave
 	private Long id;
 
 	@Index
+	@IgnoreSave(IfNull.class)
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-	private String login;
+	private String username;
 
+	@IgnoreSave(IfNull.class)
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private String password;
-	
+	private String password;
+
 	private String avatar;
-	
+
 	private String name;
-	
+
 	private String surname;
-	
+
 	private String nickName;
-	
+
 	private List<KMADegree> degrees = new LinkedList<>();
 
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private Key<SBUser> patron;
-	
+
 	private Date birthday;
-	
+
 	private List<String> phones = new LinkedList<>();
-	
+
 	private List<String> profiles = new LinkedList<>();;
-	
+
 	private List<String> emails = new LinkedList<>();;
-	
+
 	private List<SBPosition> positions = new LinkedList<>();;
-	
+
 	private List<String> interests = new LinkedList<>();;
 
-	public SBUser() {}
+	public SBUser() {
+	}
 
-	public SBUser(Long id, String login, String password, String avatar, String name, String surname, String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
+	public SBUser(Long id, String username, String password, String avatar, String name, String surname,
+			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones,
+			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
 		this.id = id;
-		this.login = login;
+		this.username = username;
 		this.password = password;
 		this.avatar = avatar;
 		this.name = name;
@@ -79,12 +91,12 @@ public class SBUser implements Serializable {
 		this.id = id;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -197,5 +209,10 @@ public class SBUser implements Serializable {
 
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
+	}
+
+	@OnSave
+	private void encryptPassword() throws NoSuchAlgorithmException {
+		setPassword(SecurityUtils.sha1(getPassword()));
 	}
 }

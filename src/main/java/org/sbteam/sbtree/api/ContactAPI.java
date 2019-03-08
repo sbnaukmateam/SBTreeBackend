@@ -54,14 +54,24 @@ public class ContactAPI {
 	}
 
 	@ApiMethod(name = "createContact", path = "contacts", httpMethod = HttpMethod.POST, authenticators = { JWTAuthenticator.class })
-	public ResultWrapper<SBUser> createContact(final User user, final SBUser contact) throws UnauthorizedException, NotFoundException {
+	public ResultWrapper<SBUser> createContact(final User user, final SBUser contact) throws UnauthorizedException, NotFoundException, BadRequestException {
 
 		if (user == null) {
 			LOG.warning("User not logged in");
 			throw new UnauthorizedException("Authorization required");
 		}
 
-		contact.setId(null); // required to have auto-generated id
+        if (contact.getPassword() == null) {
+            throw new BadRequestException("Password missing!");
+        }
+
+        if (contact.getUsername() == null) {
+            throw new BadRequestException("Username missing!");
+        }
+
+        if (contact.getName() == null) {
+            throw new BadRequestException("Name missing!");
+        }
 
         if (contact.getPatronId() != null) {
 			checkExists(contact.getPatronId());
@@ -87,6 +97,7 @@ public class ContactAPI {
 			throw new BadRequestException("Id mismatch");
 		}
 
+		contact.setUsername(null); // prevent changes in username
 		checkExists(id);
 		validatePatron(contact.getPatronId(), id);
 

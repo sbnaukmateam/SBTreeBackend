@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.ConflictException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -39,7 +40,7 @@ public class Auth {
     public ResultWrapper<String> login(UsernamePasswordCredentials credentials)
       throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
       
-        SBUser result = ofy().load().type(SBUser.class).filter("login", credentials.getUsername()).first().now();
+        SBUser result = ofy().load().type(SBUser.class).filter("username", credentials.getUsername()).first().now();
         if (result == null || credentials.getPassword() == null)  {
             throw new UnauthorizedException("Invalid credentials");
         }
@@ -57,20 +58,27 @@ public class Auth {
     }
 
     @ApiMethod(name = "signup", httpMethod = "POST")
-    public ResultWrapper<String> signup(UsernamePasswordCredentials credentials) throws ConflictException, NoSuchAlgorithmException {
+    public ResultWrapper<String> signup(SBUser newUser) throws ConflictException, NoSuchAlgorithmException, BadRequestException {
 
-        SBUser result = ofy().load().type(SBUser.class).filter("login == ", credentials.getUsername()).first().now();
+        SBUser result = ofy().load().type(SBUser.class).filter("username == ", newUser.getUsername()).first().now();
 
         if (result != null) {
             throw new ConflictException("User already exists");
         }
 
-        String hash = SecurityUtils.sha1(credentials.getPassword());
-        SBUser user = new SBUser();
-        user.setLogin(credentials.getUsername());
-        user.setPassword(hash);
+        if (newUser.getPassword() == null) {
+            throw new BadRequestException("Password missing!");
+        }
 
-        ofy().save().entity(user).now();
+        if (newUser.getUsername() == null) {
+            throw new BadRequestException("Username missing!");
+        }
+
+        if (newUser.getName() == null) {
+            throw new BadRequestException("Name missing!");
+        }
+
+        ofy().save().entity(newUser).now();
 
         return new ResultWrapper<>("User created");
     }
