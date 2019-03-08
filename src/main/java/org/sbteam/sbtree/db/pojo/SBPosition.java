@@ -10,13 +10,14 @@ public class SBPosition implements Serializable {
 
     private String name;
 
-    public SBPosition() {}
+    public SBPosition() {
+    }
 
     public SBPosition(List<Integer> years, String name) {
         this.years = years;
         this.name = name;
     }
-    
+
     public List<Integer> getYears() {
         return years;
     }

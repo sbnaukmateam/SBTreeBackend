@@ -11,8 +11,9 @@ public class KMADegree implements Serializable {
     private String speciality;
 
     private String program;
-    
-    public KMADegree() {}
+
+    public KMADegree() {
+    }
 
     public KMADegree(int year, String faculty, String speciality) {
         this.year = year;

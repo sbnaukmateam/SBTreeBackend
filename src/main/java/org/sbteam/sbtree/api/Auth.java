@@ -20,7 +20,6 @@ import static org.sbteam.sbtree.service.OfyService.ofy;
 
 import java.security.NoSuchAlgorithmException;
 
-
 @Api(name = "auth", version = "v1")
 public class Auth {
 
@@ -38,27 +37,28 @@ public class Auth {
 
     @ApiMethod(name = "login", httpMethod = "POST")
     public ResultWrapper<String> login(UsernamePasswordCredentials credentials)
-      throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
-      
+            throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
+
         SBUser result = ofy().load().type(SBUser.class).filter("username", credentials.getUsername()).first().now();
-        if (result == null || credentials.getPassword() == null)  {
+        if (result == null || credentials.getPassword() == null) {
             throw new UnauthorizedException("Invalid credentials");
         }
-        if (!SecurityUtils.sha1(credentials.getPassword()).equals(result.getPassword())){
+        if (!SecurityUtils.sha1(credentials.getPassword()).equals(result.getPassword())) {
             throw new UnauthorizedException("Invalid credentials");
         }
         try {
             JWTTokenGenerator generator = new JWTTokenGenerator();
             String token = generator.createToken(result.getId());
             return new ResultWrapper<>("Login successful", token);
-        } catch (JWTCreationException e){
+        } catch (JWTCreationException e) {
             e.printStackTrace();
             throw new InternalServerErrorException("JWT creation failed");
         }
     }
 
     @ApiMethod(name = "signup", httpMethod = "POST")
-    public ResultWrapper<String> signup(SBUser newUser) throws ConflictException, NoSuchAlgorithmException, BadRequestException {
+    public ResultWrapper<String> signup(SBUser newUser)
+            throws ConflictException, NoSuchAlgorithmException, BadRequestException {
 
         SBUser result = ofy().load().type(SBUser.class).filter("username == ", newUser.getUsername()).first().now();
 

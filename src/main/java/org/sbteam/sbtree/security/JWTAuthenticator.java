@@ -21,10 +21,8 @@ public class JWTAuthenticator implements Authenticator {
             try {
                 byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
                 Algorithm algorithm = Algorithm.HMAC512(secret);
-                String userId = JWT.require(algorithm)
-                    .build()
-                    .verify(token.replace(Constants.TOKEN_PREFIX, ""))
-                    .getSubject();
+                String userId = JWT.require(algorithm).build().verify(token.replace(Constants.TOKEN_PREFIX, ""))
+                        .getSubject();
                 if (userId != null) {
                     return new User(userId, null);
                 }

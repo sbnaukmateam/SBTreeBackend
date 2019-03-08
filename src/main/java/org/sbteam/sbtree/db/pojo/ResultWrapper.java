@@ -5,7 +5,8 @@ public class ResultWrapper<T> {
 
     private String token;
 
-    public ResultWrapper() {}
+    public ResultWrapper() {
+    }
 
     public ResultWrapper(T result) {
         this.result = result;

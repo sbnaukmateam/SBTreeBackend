@@ -10,9 +10,6 @@ public class JWTTokenGenerator {
     public String createToken(Long id) throws JWTCreationException {
         byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
         Algorithm algorithm = Algorithm.HMAC512(secret);
-        return JWT.create()
-            .withIssuer("auth0")
-            .withSubject(id.toString())
-            .sign(algorithm);
+        return JWT.create().withIssuer("auth0").withSubject(id.toString()).sign(algorithm);
     }
 }
