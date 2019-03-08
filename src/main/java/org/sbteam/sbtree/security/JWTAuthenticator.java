@@ -26,7 +26,7 @@ public class JWTAuthenticator implements Authenticator {
                     .verify(token.replace(Constants.TOKEN_PREFIX, ""))
                     .getSubject();
                 if (userId != null) {
-                    return new User(userId);
+                    return new User(userId, null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

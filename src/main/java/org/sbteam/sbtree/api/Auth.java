@@ -24,11 +24,15 @@ import java.security.NoSuchAlgorithmException;
 public class Auth {
 
     @ApiMethod(name = "verify", httpMethod = "GET", authenticators = { JWTAuthenticator.class })
-    public ResultWrapper verify(User user) throws UnauthorizedException {
+    public ResultWrapper<SBUser> verify(User user) throws UnauthorizedException {
         if (user == null) {
             throw new UnauthorizedException("You are not logged in");
         }
-        return new ResultWrapper("OK");
+        SBUser result = ofy().load().type(SBUser.class).id(Long.valueOf(user.getId())).now();
+        if (result == null) {
+            throw new UnauthorizedException("You are not logged in");
+        }
+        return new ResultWrapper<>(result);
     }
 
     @ApiMethod(name = "login", httpMethod = "POST")
