@@ -6,6 +6,8 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.IgnoreLoad;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
@@ -28,12 +30,13 @@ public class SBUser implements Serializable {
 
 	@Index
 	@IgnoreSave(IfNull.class)
-	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private String username;
 
-	@IgnoreSave(IfNull.class)
-	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+	@Ignore
 	private String password;
+
+	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+	private String hash;
 
 	private String avatar;
 
@@ -63,12 +66,13 @@ public class SBUser implements Serializable {
 	public SBUser() {
 	}
 
-	public SBUser(Long id, String username, String password, String avatar, String name, String surname,
+	public SBUser(Long id, String username, String password, String hash, String avatar, String name, String surname,
 			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones,
 			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.hash = hash;
 		this.avatar = avatar;
 		this.name = name;
 		this.surname = surname;
@@ -99,12 +103,20 @@ public class SBUser implements Serializable {
 		this.username = username;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	public String getAvatar() {
@@ -213,6 +225,9 @@ public class SBUser implements Serializable {
 
 	@OnSave
 	private void encryptPassword() throws NoSuchAlgorithmException {
-		setPassword(SecurityUtils.sha1(getPassword()));
+		String password = getPassword();
+		if (password != null) {
+			setHash(SecurityUtils.sha1(password));
+		}
 	}
 }

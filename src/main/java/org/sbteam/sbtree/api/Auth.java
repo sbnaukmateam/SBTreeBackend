@@ -10,7 +10,7 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.UnauthorizedException;
 
 import org.sbteam.sbtree.security.JWTAuthenticator;
-import org.sbteam.sbtree.security.JWTTokenGenerator;
+import org.sbteam.sbtree.security.JWTTokenManager;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.db.pojo.UsernamePasswordCredentials;
@@ -43,12 +43,12 @@ public class Auth {
         if (result == null || credentials.getPassword() == null) {
             throw new UnauthorizedException("Invalid credentials");
         }
-        if (!SecurityUtils.sha1(credentials.getPassword()).equals(result.getPassword())) {
+        if (!SecurityUtils.sha1(credentials.getPassword()).equals(result.getHash())) {
             throw new UnauthorizedException("Invalid credentials");
         }
         try {
-            JWTTokenGenerator generator = new JWTTokenGenerator();
-            String token = generator.createToken(result.getId());
+            JWTTokenManager manager = new JWTTokenManager();
+            String token = manager.createToken(result);
             return new ResultWrapper<>("Login successful", token);
         } catch (JWTCreationException e) {
             e.printStackTrace();

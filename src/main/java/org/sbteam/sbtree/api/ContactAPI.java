@@ -7,7 +7,7 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.users.User;
+import com.google.api.server.spi.auth.common.User;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -101,7 +101,6 @@ public class ContactAPI {
             throw new BadRequestException("Id mismatch");
         }
 
-        contact.setUsername(null); // prevent changes in username
         checkExists(id);
         validatePatron(contact.getPatronId(), id);
 
