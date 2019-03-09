@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.security.JWTAuthenticator;
+import org.sbteam.sbtree.utils.IgnoreNullBeanUtilsBean;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 
 import static org.sbteam.sbtree.service.OfyService.ofy;
@@ -77,13 +78,19 @@ public class ContactAPI {
             throw new BadRequestException("Name missing!");
         }
 
-        if (contact.getPatronId() != null) {
-            checkExists(contact.getPatronId());
-        }
+        SBUser result = ofy().transact(() -> {
+            try {
+                if (contact.getPatronId() != null) {
+                    checkExists(contact.getPatronId());
+                }
+                ofy().save().entity(contact).now();
+                return contact;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        ofy().save().entity(contact).now();
-
-        return new ResultWrapper<>(contact);
+        return new ResultWrapper<>(result);
     }
 
     @ApiMethod(name = "updateContact", path = "contacts/{id}", httpMethod = HttpMethod.PUT, authenticators = {
@@ -101,32 +108,39 @@ public class ContactAPI {
             throw new BadRequestException("Id mismatch");
         }
 
-        checkExists(id);
-        validatePatron(contact.getPatronId(), id);
-
-        ofy().save().entity(contact).now();
-
-        return new ResultWrapper<>(contact);
+        SBUser result = ofy().transact(() -> {
+            try {
+                SBUser sbUser = checkExists(id);
+                validatePatron(contact.getPatronId(), id);
+                IgnoreNullBeanUtilsBean.getInstance().copyProperties(sbUser, contact);
+                ofy().save().entity(sbUser).now();
+                return sbUser;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        });
+        return new ResultWrapper<>(result);
     }
 
-    private void checkExists(Long id) throws NotFoundException {
+    private SBUser checkExists(Long id) throws NotFoundException {
         try {
-            ofy().load().type(SBUser.class).id(id).safe();
+            return ofy().load().type(SBUser.class).id(id).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find Person with ID: " + id);
         }
     }
 
     private void validatePatron(Long patronId, Long memberId) throws NotFoundException, BadRequestException {
-        if (patronId == null) {
+        if (patronId == null || patronId == 0) {
             return;
         }
         if (patronId.equals(memberId)) {
             throw new BadRequestException("Invalid patron for the member");
         }
         try {
-            SBUser patron = ofy().load().type(SBUser.class).id(patronId).now();
-            if (memberId != null) {
+            SBUser patron = ofy().load().type(SBUser.class).id(patronId).safe();
+            if (memberId != null && memberId != 0) {
                 validatePatron(patron.getPatronId(), memberId);
             }
         } catch (com.googlecode.objectify.NotFoundException e) {

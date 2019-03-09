@@ -7,6 +7,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.ConflictException;
 import com.google.api.server.spi.response.InternalServerErrorException;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 
 import org.sbteam.sbtree.security.JWTAuthenticator;
@@ -57,12 +58,12 @@ public class Auth {
     }
 
     @ApiMethod(name = "signup", httpMethod = "POST")
-    public ResultWrapper<String> signup(SBUser newUser)
+    public ResultWrapper<SBUser> signup(SBUser newUser)
             throws ConflictException, NoSuchAlgorithmException, BadRequestException {
 
-        SBUser result = ofy().load().type(SBUser.class).filter("username == ", newUser.getUsername()).first().now();
+        SBUser duplicateUser = ofy().load().type(SBUser.class).filter("username == ", newUser.getUsername()).first().now();
 
-        if (result != null) {
+        if (duplicateUser != null) {
             throw new ConflictException("User already exists");
         }
 
@@ -78,8 +79,26 @@ public class Auth {
             throw new BadRequestException("Name missing!");
         }
 
-        ofy().save().entity(newUser).now();
+        SBUser result = ofy().transact(() -> {
+            try {
+                if (newUser.getPatronId() != null) {
+                    checkExists(newUser.getPatronId());
+                }
+                ofy().save().entity(newUser).now();
+                return newUser;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        return new ResultWrapper<>("User created");
+        return new ResultWrapper<>(result);
+    }
+
+    private SBUser checkExists(Long id) throws NotFoundException {
+        try {
+            return ofy().load().type(SBUser.class).id(id).safe();
+        } catch (com.googlecode.objectify.NotFoundException e) {
+            throw new NotFoundException("Could not find Person with ID: " + id);
+        }
     }
 }

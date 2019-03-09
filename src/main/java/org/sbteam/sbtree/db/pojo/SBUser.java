@@ -9,6 +9,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.OnSave;
 
 import org.sbteam.sbtree.security.SecurityUtils;
@@ -45,6 +46,9 @@ public class SBUser implements Serializable {
 
 	private List<KMADegree> degrees = new LinkedList<>();
 
+	@Ignore
+	private Long patronId;
+
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private Key<SBUser> patron;
 
@@ -64,7 +68,7 @@ public class SBUser implements Serializable {
 	}
 
 	public SBUser(Long id, String username, String password, String hash, String avatar, String name, String surname,
-			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones,
+			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Long patronId, Date birthday, List<String> phones,
 			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
 		this.id = id;
 		this.username = username;
@@ -76,6 +80,7 @@ public class SBUser implements Serializable {
 		this.nickName = nickName;
 		this.degrees = degrees;
 		this.patron = patron;
+		this.patronId = patronId;
 		this.birthday = birthday;
 		this.phones = phones;
 		this.profiles = profiles;
@@ -157,11 +162,11 @@ public class SBUser implements Serializable {
 	}
 
 	public Long getPatronId() {
-		return patron != null ? patron.getId() : null;
+		return patronId;
 	}
 
 	public void setPatronId(Long patronId) {
-		this.patron = Key.create(SBUser.class, patronId);
+		this.patronId = patronId;
 	}
 
 	public Key<SBUser> getPatron() {
@@ -226,5 +231,19 @@ public class SBUser implements Serializable {
 		if (password != null) {
 			setHash(SecurityUtils.sha1(password));
 		}
+	}
+
+	@OnSave
+	private void savePatron() {
+		if (patronId == null || patronId == 0) {
+			patron = null;
+		} else {
+			patron = Key.create(SBUser.class, patronId);
+		}
+	}
+
+	@OnLoad
+	private void loadPatron() {
+		patronId = patron != null ? patron.getId() : null;
 	}
 }
