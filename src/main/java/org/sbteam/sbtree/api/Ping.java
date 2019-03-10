@@ -5,14 +5,11 @@ import com.google.api.server.spi.config.ApiMethod;
 
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 
-@Api(
-    name = "ping",
-    version = "v1"
-)
+@Api(name = "ping", version = "v1")
 public class Ping {
 
   @ApiMethod(name = "ping", httpMethod = "GET")
-  public ResultWrapper ping() {
-    return new ResultWrapper("OK");
+  public ResultWrapper<String> ping() {
+    return new ResultWrapper<>("OK");
   }
 }

@@ -8,13 +8,14 @@ public class UsernamePasswordCredentials implements Serializable {
 
     private String password;
 
-    public UsernamePasswordCredentials() {}
+    public UsernamePasswordCredentials() {
+    }
 
     public UsernamePasswordCredentials(String username, String password) {
         this.username = username;
         this.password = password;
     }
-    
+
     public String getUsername() {
         return username;
     }
