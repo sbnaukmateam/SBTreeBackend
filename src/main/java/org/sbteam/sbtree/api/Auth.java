@@ -38,7 +38,7 @@ public class Auth {
     }
 
     @ApiMethod(name = "login", httpMethod = "POST")
-    public ResultWrapper<String> login(UsernamePasswordCredentials credentials)
+    public ResultWrapper<LoginResult> login(UsernamePasswordCredentials credentials)
             throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
 
         SBUser user = ofy().load().type(SBUser.class).filter("username", credentials.getUsername()).first().now();
