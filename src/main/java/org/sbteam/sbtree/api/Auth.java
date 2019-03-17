@@ -12,6 +12,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 
 import org.sbteam.sbtree.security.JWTAuthenticator;
 import org.sbteam.sbtree.security.JWTTokenManager;
+import org.sbteam.sbtree.db.pojo.LoginResult;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.db.pojo.UsernamePasswordCredentials;
@@ -40,17 +41,18 @@ public class Auth {
     public ResultWrapper<String> login(UsernamePasswordCredentials credentials)
             throws UnauthorizedException, NoSuchAlgorithmException, InternalServerErrorException {
 
-        SBUser result = ofy().load().type(SBUser.class).filter("username", credentials.getUsername()).first().now();
-        if (result == null || credentials.getPassword() == null) {
+        SBUser user = ofy().load().type(SBUser.class).filter("username", credentials.getUsername()).first().now();
+        if (user == null || credentials.getPassword() == null) {
             throw new UnauthorizedException("Invalid credentials");
         }
-        if (!SecurityUtils.sha1(credentials.getPassword()).equals(result.getHash())) {
+        if (!SecurityUtils.sha1(credentials.getPassword()).equals(user.getHash())) {
             throw new UnauthorizedException("Invalid credentials");
         }
         try {
             JWTTokenManager manager = new JWTTokenManager();
-            String token = manager.createToken(result);
-            return new ResultWrapper<>("Login successful", token);
+            String token = manager.createToken(user);
+            LoginResult loginResult = new LoginResult("Login successful", token, user);
+            return new ResultWrapper<>(loginResult);
         } catch (JWTCreationException e) {
             e.printStackTrace();
             throw new InternalServerErrorException("JWT creation failed");
