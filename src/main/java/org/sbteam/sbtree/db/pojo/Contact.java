@@ -26,7 +26,7 @@ public class Contact implements Serializable {
 	
 	private String nickName;
 
-	private Status status;
+	private SB_Status status;
 
 	private boolean active;
 
@@ -51,7 +51,7 @@ public class Contact implements Serializable {
 
 	public Contact() {}
 
-	public Contact(Long id, String avatar, String name, String surname, String nickName, Status status, boolean active, boolean admin, List<KMADegree> degrees, Key<Contact> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, String password) {
+	public Contact(Long id, String avatar, String name, String surname, String nickName, SB_Status status, boolean active, boolean admin, List<KMADegree> degrees, Key<Contact> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, String password) {
 		this.id = id;
 		this.avatar = avatar;
 		this.name = name;
@@ -110,11 +110,11 @@ public class Contact implements Serializable {
 		this.nickName = nickName;
 	}
 
-	public Status getStatus() {
+	public SB_Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(SB_Status status) {
 		this.status = status;
 	}
 
