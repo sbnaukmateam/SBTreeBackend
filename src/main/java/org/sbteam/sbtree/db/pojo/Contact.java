@@ -25,6 +25,12 @@ public class Contact implements Serializable {
 	private String surname;
 	
 	private String nickName;
+
+	private Status status;
+
+	private boolean active;
+
+	private boolean admin;
 	
 	private List<KMADegree> degrees = new LinkedList<>();
 
@@ -35,22 +41,25 @@ public class Contact implements Serializable {
 	
 	private List<String> phones = new LinkedList<>();
 	
-	private List<String> profiles = new LinkedList<>();;
+	private List<String> profiles = new LinkedList<>();
 	
-	private List<String> emails = new LinkedList<>();;
+	private List<String> emails = new LinkedList<>();
 	
-	private List<SBPosition> positions = new LinkedList<>();;
+	private List<SBPosition> positions = new LinkedList<>();
 	
-	private List<String> interests = new LinkedList<>();;
+	private List<String> interests = new LinkedList<>();
 
 	public Contact() {}
 
-	public Contact(Long id, String avatar, String name, String surname, String nickName, List<KMADegree> degrees, Key<Contact> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, String password) {
+	public Contact(Long id, String avatar, String name, String surname, String nickName, Status status, boolean active, boolean admin, List<KMADegree> degrees, Key<Contact> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, String password) {
 		this.id = id;
 		this.avatar = avatar;
 		this.name = name;
 		this.surname = surname;
 		this.nickName = nickName;
+		this.status = status;
+		this.active = active;
+		this.admin = admin;
 		this.degrees = degrees;
 		this.patron = patron;
 		this.birthday = birthday;
@@ -99,6 +108,30 @@ public class Contact implements Serializable {
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 
 	public List<KMADegree> getDegrees() {
