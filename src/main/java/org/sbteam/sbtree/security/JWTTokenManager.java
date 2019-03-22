@@ -13,10 +13,11 @@ import org.sbteam.sbtree.db.pojo.SBUser;
 import static org.sbteam.sbtree.service.OfyService.ofy;
 
 public class JWTTokenManager {
+    private byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
+
     public String createToken(SBUser user) throws JWTCreationException, NoSuchAlgorithmException {
         SecureRandom random = new SecureRandom();
         Long salt = random.nextLong();
-        byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
         Algorithm algorithm = Algorithm.HMAC512(secret);
         return JWT.create()
             .withIssuer("auth0")
@@ -30,7 +31,6 @@ public class JWTTokenManager {
         if (token == null) {
             return null;
         }
-        byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
         Algorithm algorithm = Algorithm.HMAC512(secret);
         DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
         String userId = jwt.getSubject();

@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Api(name = "auth", version = "v1")
 public class Auth {
+    private JWTTokenManager tokenManager = new JWTTokenManager();
 
     @ApiMethod(name = "verify", httpMethod = "GET", authenticators = { JWTAuthenticator.class })
     public ResultWrapper<SBUser> verify(User user) throws UnauthorizedException {
@@ -49,8 +50,7 @@ public class Auth {
             throw new UnauthorizedException("Invalid credentials");
         }
         try {
-            JWTTokenManager manager = new JWTTokenManager();
-            String token = manager.createToken(user);
+            String token = tokenManager.createToken(user);
             LoginResult loginResult = new LoginResult("Login successful", token, user);
             return new ResultWrapper<>(loginResult);
         } catch (JWTCreationException e) {
