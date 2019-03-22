@@ -6,34 +6,27 @@ import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Authenticator;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-
-import org.sbteam.sbtree.Constants;;
+import org.sbteam.sbtree.Constants;
+import org.sbteam.sbtree.db.pojo.SBUser;
 
 public class JWTAuthenticator implements Authenticator {
-    private byte[] secret = SecretHolder.getSecret(Constants.JWT_SECRET).getBytes();
-
     @Override
     public User authenticate(HttpServletRequest request) throws ServiceException {
         String token = request.getHeader(Constants.HEADER_STRING);
-        if (token != null) {
-            // parse the token.
-            try {
-                Algorithm algorithm = Algorithm.HMAC512(secret);
-                String userId = JWT.require(algorithm)
-                    .build()
-                    .verify(token.replace(Constants.TOKEN_PREFIX, ""))
-                    .getSubject();
-                if (userId != null) {
-                    return new User(userId);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+        if (token == null) {
             return null;
         }
-        return null;
+        String parsedToken = token.replace(Constants.TOKEN_PREFIX, "");
+        try {
+            JWTTokenManager manager = new JWTTokenManager();
+            SBUser user = manager.verifyToken(parsedToken);
+            if (user == null) {
+                return null;
+            }
+            return new User(user.getId().toString(), user.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

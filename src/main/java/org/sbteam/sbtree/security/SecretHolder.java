@@ -14,18 +14,17 @@ import org.json.simple.parser.JSONParser;
 public class SecretHolder {
     private static final String DEV_SECRETS_PATH = "src/main/webapp/WEB-INF/secrets.json";
     private static final String PROD_SECRETS_PATH = "WEB-INF/secrets.json";
-    
+
     private static Map<String, String> cache = new WeakHashMap<>();
 
     public static String getSecret(String name) {
         if (cache.containsKey(name)) {
             return cache.get(name);
         }
-        // TODO: read entire file to cache
-        try(InputStream is = new FileInputStream(getSecretsPath())) {
+        try (InputStream is = new FileInputStream(getSecretsPath())) {
             JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject)jsonParser.parse(new InputStreamReader(is, "UTF-8"));
-            return (String)jsonObject.get(name);
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, "UTF-8"));
+            return (String) jsonObject.get(name);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

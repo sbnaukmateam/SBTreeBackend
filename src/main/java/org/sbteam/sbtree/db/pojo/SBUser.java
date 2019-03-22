@@ -6,9 +6,16 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnLoad;
+import com.googlecode.objectify.annotation.OnSave;
+
+import org.sbteam.sbtree.security.SecurityUtils;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,52 +24,63 @@ import java.util.List;
 @Cache
 public class SBUser implements Serializable {
 	@Id
+	@IgnoreSave
 	private Long id;
 
 	@Index
-	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-	private String login;
+	private String username;
+
+	@Ignore
+	private String password;
 
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private String password;
-	
+	private String hash;
+
 	private String avatar;
-	
+
 	private String name;
-	
+
 	private String surname;
-	
+
 	private String nickName;
-	
+
 	private List<KMADegree> degrees = new LinkedList<>();
+
+	@Ignore
+	private Long patronId;
 
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private Key<SBUser> patron;
-	
+
 	private Date birthday;
-	
+
 	private List<String> phones = new LinkedList<>();
-	
+
 	private List<String> profiles = new LinkedList<>();;
-	
+
 	private List<String> emails = new LinkedList<>();;
-	
+
 	private List<SBPosition> positions = new LinkedList<>();;
-	
+
 	private List<String> interests = new LinkedList<>();;
 
-	public SBUser() {}
+	public SBUser() {
+	}
 
-	public SBUser(Long id, String login, String password, String avatar, String name, String surname, String nickName, List<KMADegree> degrees, Key<SBUser> patron, Date birthday, List<String> phones, List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
+	public SBUser(Long id, String username, String password, String hash, String avatar, String name, String surname,
+			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Long patronId, Date birthday, List<String> phones,
+			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
 		this.id = id;
-		this.login = login;
+		this.username = username;
 		this.password = password;
+		this.hash = hash;
 		this.avatar = avatar;
 		this.name = name;
 		this.surname = surname;
 		this.nickName = nickName;
 		this.degrees = degrees;
 		this.patron = patron;
+		this.patronId = patronId;
 		this.birthday = birthday;
 		this.phones = phones;
 		this.profiles = profiles;
@@ -79,20 +97,28 @@ public class SBUser implements Serializable {
 		this.id = id;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	public String getAvatar() {
@@ -136,11 +162,11 @@ public class SBUser implements Serializable {
 	}
 
 	public Long getPatronId() {
-		return patron != null ? patron.getId() : null;
+		return patronId;
 	}
 
 	public void setPatronId(Long patronId) {
-		this.patron = Key.create(SBUser.class, patronId);
+		this.patronId = patronId;
 	}
 
 	public Key<SBUser> getPatron() {
@@ -197,5 +223,27 @@ public class SBUser implements Serializable {
 
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
+	}
+
+	@OnSave
+	private void encryptPassword() throws NoSuchAlgorithmException {
+		String password = getPassword();
+		if (password != null) {
+			setHash(SecurityUtils.sha1(password));
+		}
+	}
+
+	@OnSave
+	private void savePatron() {
+		if (patronId == null || patronId == 0) {
+			patron = null;
+		} else {
+			patron = Key.create(SBUser.class, patronId);
+		}
+	}
+
+	@OnLoad
+	private void loadPatron() {
+		patronId = patron != null ? patron.getId() : null;
 	}
 }

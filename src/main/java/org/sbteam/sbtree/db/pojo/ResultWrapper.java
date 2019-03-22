@@ -3,17 +3,11 @@ package org.sbteam.sbtree.db.pojo;
 public class ResultWrapper<T> {
     private T result;
 
-    private String token;
-
-    public ResultWrapper() {}
+    public ResultWrapper() {
+    }
 
     public ResultWrapper(T result) {
         this.result = result;
-    }
-
-    public ResultWrapper(T result, String token) {
-        this.result = result;
-        this.token = token;
     }
 
     public void setResult(T result) {
@@ -22,13 +16,5 @@ public class ResultWrapper<T> {
 
     public T getResult() {
         return result;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
     }
 }
