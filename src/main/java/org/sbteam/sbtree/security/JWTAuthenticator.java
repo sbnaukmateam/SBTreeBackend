@@ -10,6 +10,7 @@ import org.sbteam.sbtree.Constants;
 import org.sbteam.sbtree.db.pojo.SBUser;
 
 public class JWTAuthenticator implements Authenticator {
+    
     @Override
     public User authenticate(HttpServletRequest request) throws ServiceException {
         String token = request.getHeader(Constants.HEADER_STRING);
