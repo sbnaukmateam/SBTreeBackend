@@ -64,6 +64,12 @@ public class SBUser implements Serializable {
 
 	private List<String> interests = new LinkedList<>();;
 
+	private SBStatus status;
+
+	private boolean active;
+
+	private boolean admin;
+
 	public SBUser() {
 	}
 
@@ -223,6 +229,30 @@ public class SBUser implements Serializable {
 
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
+	}
+
+	public SBStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(SBStatus status) {
+		this.status = status;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 
 	@OnSave

@@ -66,16 +66,12 @@ public class ContactAPI {
             throw new UnauthorizedException("Authorization required");
         }
 
-        if (contact.getPassword() == null) {
-            throw new BadRequestException("Password missing!");
-        }
-
-        if (contact.getUsername() == null) {
-            throw new BadRequestException("Username missing!");
-        }
-
         if (contact.getName() == null) {
             throw new BadRequestException("Name missing!");
+        }
+
+        if (contact.getSurname() == null) {
+            throw new BadRequestException("Surname missing!");
         }
 
         SBUser result = ofy().transact(() -> {

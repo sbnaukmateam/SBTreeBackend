@@ -49,6 +49,10 @@ public class Auth {
         if (!SecurityUtils.sha1(credentials.getPassword()).equals(user.getHash())) {
             throw new UnauthorizedException("Invalid credentials");
         }
+        // TODO allow non-admins to login once permission logic will be ready
+        if (!user.isAdmin()) {
+            throw new UnauthorizedException("Your account is not permitted to login");
+        }
         try {
             String token = tokenManager.createToken(user);
             LoginResult loginResult = new LoginResult("Login successful", token, user);
