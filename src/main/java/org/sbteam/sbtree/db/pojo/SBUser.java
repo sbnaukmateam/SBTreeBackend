@@ -74,7 +74,8 @@ public class SBUser implements Serializable {
 
 	public SBUser(Long id, String username, String password, String hash, String avatar, String name, String surname,
 			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Long patronId, Date birthday, List<String> phones,
-			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests) {
+			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, Boolean active,
+			Boolean admin, SBStatus status) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -92,6 +93,9 @@ public class SBUser implements Serializable {
 		this.emails = emails;
 		this.positions = positions;
 		this.interests = interests;
+		this.active = active;
+		this.admin = admin;
+		this.status = status;
 	}
 
 	public Long getId() {
