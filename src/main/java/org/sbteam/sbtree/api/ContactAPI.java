@@ -107,8 +107,14 @@ public class ContactAPI {
         SBUser result = ofy().transact(() -> {
             try {
                 SBUser sbUser = checkExists(id);
+                System.out.println("Initial");
+                System.out.println(sbUser.getEmails());
+                System.out.println("New");
+                System.out.println(contact.getEmails());
                 validatePatron(contact.getPatronId(), id);
                 IgnoreNullBeanUtilsBean.getInstance().copyProperties(sbUser, contact);
+                System.out.println("After");
+                System.out.println(sbUser.getEmails());
                 ofy().save().entity(sbUser).now();
                 return sbUser;
             } catch (Exception e) {

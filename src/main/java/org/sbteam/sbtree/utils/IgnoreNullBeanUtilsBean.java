@@ -31,7 +31,7 @@ public class IgnoreNullBeanUtilsBean extends BeanUtilsBean {
 
     public IgnoreNullBeanUtilsBean(final ConvertUtilsBean convertUtilsBean, final PropertyUtilsBean propertyUtilsBean) {
         super(convertUtilsBean, propertyUtilsBean);
-        getConvertUtils().register(false, true, 0);
+        getConvertUtils().register(false, true, -1);
     }
 
     @Override

@@ -17,7 +17,6 @@ import org.sbteam.sbtree.security.SecurityUtils;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -44,7 +43,7 @@ public class SBUser implements Serializable {
 
 	private String nickName;
 
-	private List<KMADegree> degrees = new LinkedList<>();
+	private List<KMADegree> degrees;
 
 	@Ignore
 	private Long patronId;
@@ -54,21 +53,21 @@ public class SBUser implements Serializable {
 
 	private Date birthday;
 
-	private List<String> phones = new LinkedList<>();
+	private List<String> phones;
 
-	private List<String> profiles = new LinkedList<>();;
+	private List<String> profiles;
 
-	private List<String> emails = new LinkedList<>();;
+	private List<String> emails;
 
-	private List<SBPosition> positions = new LinkedList<>();;
+	private List<SBPosition> positions;
 
-	private List<String> interests = new LinkedList<>();;
+	private List<String> interests;
 
 	private SBStatus status;
 
-	private boolean active;
+	private Boolean active;
 
-	private boolean admin;
+	private Boolean admin;
 
 	public SBUser() {
 	}
@@ -239,19 +238,19 @@ public class SBUser implements Serializable {
 		this.status = status;
 	}
 
-	public boolean isActive() {
+	public Boolean isActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 
-	public boolean isAdmin() {
+	public Boolean isAdmin() {
 		return admin;
 	}
 
-	public void setAdmin(boolean admin) {
+	public void setAdmin(Boolean admin) {
 		this.admin = admin;
 	}
 
