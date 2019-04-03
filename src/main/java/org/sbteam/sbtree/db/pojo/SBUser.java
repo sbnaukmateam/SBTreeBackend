@@ -242,7 +242,7 @@ public class SBUser implements Serializable {
 		this.status = status;
 	}
 
-	public Boolean isActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
@@ -250,7 +250,7 @@ public class SBUser implements Serializable {
 		this.active = active;
 	}
 
-	public Boolean isAdmin() {
+	public Boolean getAdmin() {
 		return admin;
 	}
 

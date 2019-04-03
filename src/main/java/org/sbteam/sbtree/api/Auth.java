@@ -50,7 +50,7 @@ public class Auth {
             throw new UnauthorizedException("Invalid credentials");
         }
         // TODO allow non-admins to login once permission logic will be ready
-        // if (!user.isAdmin()) {
+        // if (!user.getAdmin()) {
         //     throw new UnauthorizedException("Your account is not permitted to login");
         // }
         try {
