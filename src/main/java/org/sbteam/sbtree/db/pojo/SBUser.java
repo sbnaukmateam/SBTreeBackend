@@ -32,6 +32,9 @@ public class SBUser implements Serializable {
 	@Ignore
 	private String password;
 
+	@Ignore
+	private String oldPassword;
+
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
 	private String hash;
 
@@ -75,7 +78,7 @@ public class SBUser implements Serializable {
 	public SBUser(Long id, String username, String password, String hash, String avatar, String name, String surname,
 			String nickName, List<KMADegree> degrees, Key<SBUser> patron, Long patronId, Date birthday, List<String> phones,
 			List<String> profiles, List<String> emails, List<SBPosition> positions, List<String> interests, Boolean active,
-			Boolean admin, SBStatus status) {
+			Boolean admin, SBStatus status, String oldPassword) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -96,6 +99,7 @@ public class SBUser implements Serializable {
 		this.active = active;
 		this.admin = admin;
 		this.status = status;
+		this.oldPassword = oldPassword;
 	}
 
 	public Long getId() {
@@ -120,6 +124,14 @@ public class SBUser implements Serializable {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
+	public String getOldPassword() {
+		return oldPassword;
 	}
 
 	public String getHash() {

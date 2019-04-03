@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.sbteam.sbtree.db.pojo.SBUser;
 import org.sbteam.sbtree.security.JWTAuthenticator;
+import org.sbteam.sbtree.security.SecurityUtils;
 import org.sbteam.sbtree.utils.IgnoreNullBeanUtilsBean;
 import org.sbteam.sbtree.db.pojo.ResultWrapper;
 
@@ -107,6 +108,14 @@ public class ContactAPI {
         SBUser result = ofy().transact(() -> {
             try {
                 SBUser sbUser = checkExists(id);
+                if (contact.getPassword() != null) {
+                    if (contact.getOldPassword() == null) {
+                        throw new UnauthorizedException("Missing old password");
+                    }
+                    if (!SecurityUtils.sha1(contact.getOldPassword()).equals(sbUser.getHash())) {
+                        throw new UnauthorizedException("Invalid credentials");
+                    }
+                }
                 System.out.println("Initial");
                 System.out.println(sbUser.getEmails());
                 System.out.println("New");
