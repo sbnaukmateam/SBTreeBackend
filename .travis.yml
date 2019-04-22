@@ -1,3 +1,5 @@
+language:
+  - java
 deploy:
   provider: gae
   keyfile: api-sbnaukma-b949b0f52c7d.json
